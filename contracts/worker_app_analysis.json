@@ -1,0 +1,8 @@
+{
+    "sender": "...",
+    "recipient": "...",
+    "status": "unknown",
+    "subject": "...",
+    "headers": "...",
+    "content": "..."
+}

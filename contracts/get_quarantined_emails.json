@@ -1,0 +1,13 @@
+{
+    "period": "August 21, 2026 14:00 - August 22, 2026 14:00",
+    "items": [
+        {
+            "publicId": "...",
+            "subject": "...",
+            "sender": "...",
+            "reason": "phishing",
+            "score": 23,
+            "receivedAt": "August 22, 2026 08:42"
+        }
+    ]
+}

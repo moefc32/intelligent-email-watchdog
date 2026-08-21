@@ -1,0 +1,13 @@
+{
+    "items": [
+        {
+            "publicId": "...",
+            "subject": "...",
+            "sender": "...",
+            "status": "passed",
+            "reason": "legitimate",
+            "score": 89,
+            "receivedAt": "August 22, 2026 08:42"
+        }
+    ]
+}
