@@ -1,10 +1,10 @@
-export async function checkEmailBlacklist(db, address) {
+export async function checkEmailSender(db, table, address) {
     const result = await db
         .prepare(`
-            UPDATE Email_Blacklist
-            SET hit = hit + 1
+            SELECT 1
+            FROM ${table}
             WHERE address = ?
-            RETURNING address;
+            LIMIT 1;
         `)
         .bind(address)
         .first();
