@@ -1,13 +1,14 @@
-import { relations } from 'drizzle-orm';
 import {
     mysqlTable,
     bigint,
     char,
+    int,
     longtext,
     text,
     timestamp,
     varchar,
 } from 'drizzle-orm/mysql-core';
+import { relations } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
 
 export const Quarantine = mysqlTable('Quarantine', {
@@ -27,8 +28,8 @@ export const Logs = mysqlTable('Logs', {
         mode: 'number',
         unsigned: true,
     }).unique().references(() => Quarantine.id),
-    sender: varchar('sender', { length: 320 }).notNull(),
-    recipient: varchar('recipient', { length: 320 }).notNull(),
+    sender: varchar('sender', { length: 255 }).notNull(),
+    recipient: varchar('recipient', { length: 255 }).notNull(),
     message: text('message').notNull(),
     status: varchar('status', { length: 32 }).notNull(),
     reason: varchar('reason', { length: 64 }),

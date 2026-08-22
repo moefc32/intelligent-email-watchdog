@@ -1,0 +1,38 @@
+{
+    "name": "intelligent-email-watchdog",
+    "private": true,
+    "version": "0.0.1",
+    "type": "module",
+    "scripts": {
+        "dev": "vite dev",
+        "build": "vite build",
+        "preview": "vite preview",
+        "prepare": "svelte-kit sync || echo ''",
+        "db:generate": "bunx drizzle-kit generate --config=drizzle.config.js",
+        "db:migrate": "bunx drizzle-kit migrate --config=drizzle.config.js",
+        "db:push": "bunx drizzle-kit push"
+    },
+    "devDependencies": {
+        "@sveltejs/adapter-node": "^5.5.7",
+        "@sveltejs/kit": "^2.70.3",
+        "@sveltejs/vite-plugin-svelte": "^5.1.1",
+        "@tailwindcss/vite": "^4.3.3",
+        "daisyui": "^5.7.20",
+        "drizzle-kit": "^0.31.10",
+        "svelte": "^5.56.10",
+        "tailwindcss": "^4.3.3",
+        "vite": "^6.4.3"
+    },
+    "dependencies": {
+        "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
+        "@lucide/svelte": "^1.33.0",
+        "bcrypt": "^5.1.1",
+        "dotenv": "^16.6.1",
+        "drizzle-orm": "^0.45.2",
+        "jsonwebtoken": "^9.0.3",
+        "ky": "^1.14.3",
+        "mysql2": "^3.23.4",
+        "qrcode": "^1.5.4",
+        "svelte-sonner": "^1.2.1"
+    }
+}
