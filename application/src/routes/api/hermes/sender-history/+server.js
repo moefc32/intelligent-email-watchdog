@@ -1,9 +1,20 @@
-import { VITE_APP_NAME } from '$env/static/private';
+// get a specific sender history
+
 import { json } from '@sveltejs/kit';
 
 export async function GET() {
     return json({
-        application: VITE_APP_NAME,
-        message: 'Application is running.',
+        sender: '...',
+        status: {
+            passed: 15,
+            quarantined: 7
+        },
+        reason: {
+            legitimate: 15,
+            spam: 4,
+            scam: 2,
+            blacklist: 1
+        },
+        averageScore: 54.4
     });
 }

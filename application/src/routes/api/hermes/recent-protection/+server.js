@@ -1,9 +1,19 @@
-import { VITE_APP_NAME } from '$env/static/private';
+// get protection summary of the last 24 hours by maximum 20 items
+
 import { json } from '@sveltejs/kit';
 
 export async function GET() {
     return json({
-        application: VITE_APP_NAME,
-        message: 'Application is running.',
+        items: [
+            {
+                publicId: '...',
+                subject: '...',
+                sender: '...',
+                status: 'passed',
+                reason: 'legitimate',
+                score: 89,
+                receivedAt: 'August 22, 2026 08:42'
+            }
+        ]
     });
 }

@@ -1,9 +1,20 @@
-import { VITE_APP_NAME } from '$env/static/private';
+// get protection summary of the last 24 hours
+
 import { json } from '@sveltejs/kit';
 
 export async function GET() {
     return json({
-        application: VITE_APP_NAME,
-        message: 'Application is running.',
+        period: 'August 20, 2026 14:00 - August 21, 2026 14:00',
+        status: {
+            passed: 35,
+            quarantined: 7
+        },
+        reason: {
+            whitelist: 20,
+            legitimate: 15,
+            spam: 4,
+            scam: 2,
+            blacklist: 1
+        }
     });
 }
