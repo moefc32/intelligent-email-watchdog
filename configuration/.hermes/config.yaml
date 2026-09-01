@@ -1,0 +1,21 @@
+platforms:
+  telegram:
+    enabled: true
+
+telegram:
+  require_mention: false
+
+display:
+  tool_progress: all
+
+streaming:
+  enabled: true
+  transport: auto
+
+agent:
+  tool_use_enforcement: true
+
+code_execution:
+  mode: project
+  timeout: 300
+  max_tool_calls: 50
