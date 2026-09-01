@@ -43,7 +43,7 @@
     <div class="card bg-gray-700 shadow-xl w-full max-w-80">
         <div class="card-body flex flex-col gap-3">
             <h1 class="text-3xl text-center">
-                {import.meta.env.VITE_APP_NAME}
+                Login
             </h1>
 
             <input

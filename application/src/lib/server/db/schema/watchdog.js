@@ -27,7 +27,9 @@ export const Logs = mysqlTable('Logs', {
     quarantineId: bigint('quarantine_id', {
         mode: 'number',
         unsigned: true,
-    }).unique().references(() => Quarantine.id),
+    }).unique().references(() => Quarantine.id, {
+        onDelete: 'set null',
+    }),
     sender: varchar('sender', { length: 255 }).notNull(),
     recipient: varchar('recipient', { length: 255 }).notNull(),
     message: text('message').notNull(),
@@ -35,11 +37,6 @@ export const Logs = mysqlTable('Logs', {
     reason: varchar('reason', { length: 64 }),
     score: int('score'),
     createdAt: timestamp('created_at', { fsp: 3 }).notNull().defaultNow(),
-});
-
-export const Config = mysqlTable('Config', {
-    key: varchar('key', { length: 64 }).primaryKey(),
-    value: text('value').notNull(),
 });
 
 export const QuarantineRelations = relations(Quarantine, ({ one }) => ({

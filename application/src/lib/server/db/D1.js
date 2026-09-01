@@ -1,9 +1,11 @@
-const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
-const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
-const D1_DATABASE_ID = process.env.D1_DATABASE_ID;
+import {
+    VITE_CLOUDFLARE_ACCOUNT_ID,
+    VITE_CLOUDFLARE_API_TOKEN,
+    VITE_D1_DATABASE_ID,
+} from '$env/static/private';
 
 const D1_API_URL =
-    `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/d1/database/${D1_DATABASE_ID}/query`;
+    `https://api.cloudflare.com/client/v4/accounts/${VITE_CLOUDFLARE_ACCOUNT_ID}/d1/database/${VITE_D1_DATABASE_ID}/query`;
 
 const TABLES = ['Blacklist', 'Whitelist'];
 
@@ -11,7 +13,7 @@ async function request(sql, params = []) {
     const response = await fetch(D1_API_URL, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`,
+            Authorization: `Bearer ${VITE_CLOUDFLARE_API_TOKEN}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ sql, params }),
@@ -38,43 +40,35 @@ function tableName(table) {
 }
 
 export default {
-    get: async (address) => {
+    get: async (table, address) => {
+        const name = tableName(table);
+
         if (address) {
-            const results = await Promise.all(
-                TABLES.map(async (table) => {
-
-                    const result = await request(
-                        `SELECT * FROM "${table}" WHERE "address" = ? LIMIT 1;`,
-                        [address],
-                    );
-
-                    return {
-                        table,
-                        entry: result?.results?.[0] ?? null,
-                    };
-
-                }),
+            const result = await request(
+                `SELECT * FROM ${name} WHERE "address" = ? LIMIT 1;`,
+                [address],
             );
 
-            return Object.fromEntries(
-                results.map(({ table, entry }) => [table, entry]),
-            );
+            return result?.results?.[0] ?? null;
         }
 
+        const result = await request(`SELECT * FROM ${name};`);
+
+        return result?.results ?? [];
+    },
+    getSummary: async () => {
         const results = await Promise.all(
             TABLES.map(async (table) => {
-                const result = await request(`SELECT * FROM "${table}";`);
+                const result = await request(`SELECT COUNT(*) FROM "${table}";`);
 
-                return {
+                return [
                     table,
-                    entries: result?.results ?? [],
-                };
+                    result?.results?.[0]?.['COUNT(*)'] ?? 0
+                ];
             }),
         );
 
-        return Object.fromEntries(
-            results.map(({ table, entries }) => [table, entries]),
-        );
+        return Object.fromEntries(results);
     },
     create: async (table, data) => {
         const name = tableName(table);

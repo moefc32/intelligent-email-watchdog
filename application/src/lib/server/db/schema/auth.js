@@ -13,6 +13,7 @@ export const Users = mysqlTable('Users', {
         .autoincrement().primaryKey(),
     publicId: char('public_id', { length: 36 }).notNull().unique()
         .$defaultFn(() => randomUUID()),
+    name: varchar('name', { length: 255 }),
     email: varchar('email', { length: 255 }).notNull().unique(),
     password: text('password').notNull(),
 });

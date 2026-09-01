@@ -8,6 +8,7 @@ export default {
             const query = db
                 .select({
                     id: Users.id,
+                    name: Users.name,
                     email: Users.email,
                     password: Users.password,
                 })
@@ -33,10 +34,11 @@ export default {
     },
     createData: async (data) => {
         try {
-            const [result] = await db.insert(Users).values({
+            const result = await db.insert(Users).values({
+                name: data.name,
                 email: data.email,
                 password: data.password,
-            }).returning();
+            });
 
             return result;
         } catch (e) {
@@ -46,13 +48,13 @@ export default {
     },
     editData: async (data, id) => {
         try {
-            const [result] = await db.update(Users)
+            const result = await db.update(Users)
                 .set({
+                    name: data.name ?? undefined,
                     email: data.email ?? undefined,
                     password: data.password ?? undefined,
                 })
-                .where(eq(Users.id, id))
-                .returning();
+                .where(eq(Users.id, id));
 
             return result;
         } catch (e) {

@@ -1,15 +1,24 @@
 <script>
     import { page } from '$app/stores';
     import { goto } from '$app/navigation';
-    import { Key, LogOut, Eye, EyeOff, Check } from '@lucide/svelte';
+    import { ChevronDown, Eye, EyeOff, Check } from '@lucide/svelte';
     import { toast } from 'svelte-sonner';
     import ky from 'ky';
     import isValidEmail from '$lib/isValidEmail';
 
+    const links = [
+        { href: '/', label: 'Overview' },
+        { href: '/blacklist', label: 'Blacklist' },
+        { href: '/whitelist', label: 'Whitelist' },
+        { href: '/quarantine', label: 'Quarantine' },
+        { href: '/logs', label: 'Logs' },
+    ];
+
     let modalProfile = false;
 
     let profile = {
-        email: $page.data.user_email,
+        name: $page.data.userData.name,
+        email: $page.data.userData.email,
         password: '',
     };
 
@@ -46,32 +55,60 @@
     }
 </script>
 
-<header class="navbar bg-gray-700 px-3 rounded-lg shadow-xl">
-    <div class="flex">
-        <a
-            href="/"
-            class="flex items-center ps-10 bg-[url('/favicon.svg')] bg-left bg-no-repeat bg-contain text-xl font-semibold h-8 cursor-pointer"
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+<!-- svelte-ignore a11y_missing_attribute -->
+<header class="flex items-center h-12">
+    <a
+        href="/"
+        class="flex items-center ps-12 bg-[url('/favicon.svg')] bg-left bg-no-repeat bg-contain text-xl font-semibold h-10 cursor-pointer"
+    >
+        {import.meta.env.VITE_APP_NAME}
+    </a>
+    <div class="flex items-center gap-1 ms-auto h-full">
+        <div
+            class="flex items-center p-1 bg-slate-500/50 h-full rounded-[100px]"
         >
-            {import.meta.env.VITE_APP_NAME}
-        </a>
-    </div>
-    <div class="flex gap-1 ms-auto">
-        <button
-            class="btn btn-outline btn-sm"
-            title="Edit login account"
-            on:click={() => edit_profile.showModal()}
-        >
-            <Key size={14} />
-            <span class="hidden md:inline">Edit Account</span>
-        </button>
-        <button
-            class="btn btn-primary btn-sm"
-            title="Logout from application"
-            on:click={() => doLogout()}
-        >
-            <LogOut size={14} />
-            <span class="hidden md:inline">Logout</span>
-        </button>
+            {#each links as item, i}
+                <a
+                    href={item.href}
+                    class="inline-flex items-center px-6 h-full rounded-[100px] {$page
+                        .url.pathname === item.href
+                        ? 'bg-white/15'
+                        : ''}"
+                >
+                    {item.label}
+                </a>
+            {/each}
+        </div>
+
+        <div class="dropdown dropdown-end ms-3">
+            <div
+                tabindex="0"
+                role="button"
+                class="flex items-center gap-1 cursor-pointer"
+            >
+                <div class="bg-white w-10 rounded-full overflow-hidden">
+                    <img
+                        src="https://gravatar.com/avatar/{$page.data
+                            .hashed_email}?s=40"
+                    />
+                </div>
+                <ChevronDown size={16} />
+            </div>
+            <ul
+                tabindex="0"
+                class="menu menu-sm dropdown-content mt-3 p-2 bg-white text-black w-32 rounded-box z-10 shadow-lg"
+            >
+                <li>
+                    <button on:click={() => edit_profile.showModal()}>
+                        Edit Account
+                    </button>
+                </li>
+                <li>
+                    <button on:click={() => doLogout()}>Logout</button>
+                </li>
+            </ul>
+        </div>
     </div>
 </header>
 
@@ -79,6 +116,13 @@
     <div class="modal-box max-w-100">
         <h3 class="text-lg font-bold">Edit Account</h3>
         <div class="flex flex-col gap-2 pt-4">
+            <input
+                type="name"
+                class="input input-bordered w-full"
+                placeholder="New name"
+                bind:value={profile.name}
+                on:keydown={handleKeydown}
+            />
             <input
                 type="email"
                 class="input input-bordered w-full"

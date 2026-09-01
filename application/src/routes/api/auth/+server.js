@@ -65,6 +65,7 @@ export async function POST({ cookies, request }) {
 
 export async function PATCH({ cookies, request }) {
     const {
+        name = '',
         email = '',
         password = '',
     } = await request.json() || {};
@@ -92,6 +93,7 @@ export async function PATCH({ cookies, request }) {
             });
 
         const data = {
+            name: name === '' ? null : name,
             email: email === '' ? null : email.trim().toLowerCase(),
             password: password
                 ? await hashPassword(password)
@@ -118,6 +120,7 @@ export async function PATCH({ cookies, request }) {
 
 export async function PUT({ request }) {
     const {
+        name = '',
         email = '',
         password = '',
     } = await request.json() || {};
@@ -143,6 +146,7 @@ export async function PUT({ request }) {
             });
 
         const result = await model.createData({
+            name,
             email: email.trim().toLowerCase(),
             password: await hashPassword(password),
         });

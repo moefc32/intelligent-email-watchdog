@@ -1,6 +1,6 @@
 <script>
     import { page } from '$app/stores';
-    import { Eye, Trash2 } from '@lucide/svelte';
+    import { Pen, Trash2 } from '@lucide/svelte';
     import ky from 'ky';
     import datePrettier from '$lib/datePrettier';
 
@@ -15,9 +15,8 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Sender</th>
-                <th>Subject</th>
-                <th>Received At</th>
+                <th>Address</th>
+                <th>Created At</th>
                 <th class="w-[1%] whitespace-nowrap">Actions</th>
             </tr>
         </thead>
@@ -29,17 +28,16 @@
                             ? 'bg-black/5 hover:bg-black/9'
                             : 'hover:bg-black/7'} transition duration-100"
                     >
-                        <td>{item.sender}</td>
-                        <td>{item.subject}</td>
+                        <td>{item.address}</td>
                         <td>
-                            {datePrettier(item.createdAt, {
+                            {datePrettier(item.created_at, {
                                 date: true,
                                 time: true,
                             })}
                         </td>
                         <td class="w-[1%] whitespace-nowrap">
-                            <button class="btn btn-sm btn-primary">
-                                <Eye size={12} /> View
+                            <button class="btn btn-sm btn-warning">
+                                <Pen size={12} /> Edit
                             </button>
                             <button class="btn btn-sm btn-error">
                                 <Trash2 size={12} /> Delete
@@ -49,8 +47,8 @@
                 {/each}
             {:else}
                 <tr>
-                    <td class="py-12 text-gray-500 text-center" colspan="4">
-                        - No quarantined item found -
+                    <td class="py-12 text-gray-500 text-center" colspan="3">
+                        - No whitelisted address found -
                     </td>
                 </tr>
             {/if}

@@ -1,51 +1,48 @@
 <script>
-    import ky from 'ky';
-    import isValidEmail from '$lib/isValidEmail';
+    import { page } from '$app/stores';
 
-    // import Header from '$lib/component/Header.svelte';
-    // import TableURL from '$lib/component/TableURL.svelte';
-    // import CreateURL from '$lib/component/CreateURL.svelte';
+    const contents = $page.data.contents;
 
-    // export let data;
+    let currentTime = $state(new Date());
+    let greeting = $derived.by(() => {
+        const hours = currentTime.getHours();
+        const isNight = hours < 5 || hours >= 21;
 
-    // let { contents } = data;
+        if (isNight) return 'Good night';
+        if (hours < 12) return 'Good morning';
+        if (hours < 17) return 'Good afternoon';
 
-    // let search = {
-    //     keyword: '',
-    //     loading: false,
-    //     results: [],
-    // };
-
-    // async function reloadURLList() {
-    //     try {
-    //         const result = await ky.get('/api/url').json();
-    //         contents = result.data;
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // }
-
-    // async function doSearch() {
-    //     search.loading = true;
-
-    //     try {
-    //         const result = await ky
-    //             .get('/api/url', {
-    //                 searchParams: {
-    //                     s: search.keyword,
-    //                 },
-    //             })
-    //             .json();
-
-    //         search.results = result.data;
-    //     } catch (e) {
-    //         console.error(e);
-    //     } finally {
-    //         search.loading = false;
-    //     }
-    // }
+        return 'Good evening';
+    });
 </script>
 
-<main class="container flex flex-1 flex-col gap-6 mx-auto p-6">
-    <Header />
-</main>
+<section class="mt-6 font-semibold text-3xl">
+    {greeting}, <span class="text-slate-400">{$page.data.userData.name}</span>
+</section>
+
+<div class="flex items-center gap-3">
+    <div
+        class="flex flex-2 gap-3 py-3 bg-blue-500/65 text-white border-1 border-blue-600 rounded-lg"
+    >
+        <div class="flex flex-1 flex-col gap-1 px-6 py-3 border-gray-200">
+            <span class="text-sm">Blacklisted Address</span>
+            <span class="text-3xl">{contents.summaryD1.Blacklist}</span>
+        </div>
+        <div
+            class="flex flex-1 flex-col gap-1 px-6 py-3 border-l border-gray-200"
+        >
+            <span class="text-sm">Whitelisted Address</span>
+            <span class="text-3xl">{contents.summaryD1.Whitelist}</span>
+        </div>
+    </div>
+    <div
+        class="flex flex-1 gap-3 py-3 bg-red-500/65 text-white border-1 border-red-600 rounded-lg"
+    >
+        <div class="flex flex-1 flex-col gap-1 px-6 py-3 border-gray-200">
+            <span class="text-sm">Quarantined Email</span>
+            <span class="text-3xl">{0}</span>
+        </div>
+    </div>
+</div>
+
+<div class="flex items-start flex-1 p-6 bg-slate-500/25 rounded-lg"></div>
