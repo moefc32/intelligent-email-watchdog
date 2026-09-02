@@ -45,4 +45,4 @@
     </div>
 </div>
 
-<div class="flex items-start flex-1 p-6 bg-slate-500/25 rounded-lg"></div>
+<div class="flex flex-1 items-start p-3 bg-slate-500/25 rounded-lg"></div>

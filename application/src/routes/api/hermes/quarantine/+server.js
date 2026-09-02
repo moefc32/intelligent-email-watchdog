@@ -17,7 +17,7 @@ export async function GET({ request, url }) {
             period: 'August 21, 2026 14:00 - August 22, 2026 14:00',
             items: [
                 {
-                    publicId: '...',
+                    id: '...',
                     subject: '...',
                     sender: '...',
                     reason: 'phishing',
@@ -28,7 +28,7 @@ export async function GET({ request, url }) {
         });
 
         return json({
-            publicId: '...',
+            id: '...',
             subject: '...',
             headers: '...',
             content: '...',

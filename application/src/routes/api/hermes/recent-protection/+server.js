@@ -13,7 +13,7 @@ export async function GET({ request }) {
         return json({
             items: [
                 {
-                    publicId: '...',
+                    id: '...',
                     subject: '...',
                     sender: '...',
                     status: 'passed',

@@ -10,7 +10,9 @@
 <PageTitle pageTitle={$page.data.pageTitle} />
 
 <div class="flex flex-1 gap-3">
-    <div class="flex items-start p-3 bg-slate-500/25 w-[300px] rounded-lg">
+    <div
+        class="flex items-start p-3 bg-slate-500/25 w-80 max-h-[calc(100dvh-205px)] rounded-lg overflow-y-auto"
+    >
         {#each contents.days as item, i}
             <button
                 class="flex-1 px-4 py-2 text-start rounded cursor-pointer {item ===
@@ -21,8 +23,10 @@
             </button>
         {/each}
     </div>
-    <div class="flex items-start flex-1 p-3 bg-slate-500/25 rounded-lg">
-        <table class="table">
+    <div
+        class="flex flex-1 items-start p-3 bg-slate-500/25 max-h-[calc(100dvh-205px)] rounded-lg overflow-y-auto"
+    >
+        <table class="table table-pin-rows">
             <thead>
                 <tr>
                     <th class="w-[1%] whitespace-nowrap">Time</th>
@@ -47,7 +51,7 @@
                     {/each}
                 {:else}
                     <tr>
-                        <td class="py-12 text-gray-500 text-center" colspan="2">
+                        <td class="py-12 text-center" colspan="2">
                             - No recorded log -
                         </td>
                     </tr>
