@@ -1,4 +1,4 @@
-import model from '$lib/server/db/model/logs.js';
+import model from '$lib/server/db/model/logs';
 
 export async function load({ parent }) {
     const pageTitle = 'Protection Logs';

@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
 import model from '$lib/server/db/model/auth';
 import token from '$lib/server/token';
 

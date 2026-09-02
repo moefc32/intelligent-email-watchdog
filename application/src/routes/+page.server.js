@@ -1,4 +1,4 @@
-import D1 from '$lib/server/db/D1.js';
+import D1 from '$lib/server/db/D1';
 
 export async function load({ parent }) {
     const pageTitle = 'Overview';

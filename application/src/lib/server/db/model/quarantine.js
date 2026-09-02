@@ -39,6 +39,8 @@ export default {
                     id: Quarantine.publicId,
                     subject: Quarantine.subject,
                     sender: Logs.sender,
+                    reason: Logs.reason,
+                    score: Logs.score,
                     createdAt: Logs.createdAt,
                 })
                 .from(Quarantine)
@@ -63,6 +65,7 @@ export default {
                     content: Quarantine.content,
                     sender: Logs.sender,
                     recipient: Logs.recipient,
+                    status: Logs.status,
                     reason: Logs.reason,
                     score: Logs.score,
                     createdAt: Logs.createdAt,

@@ -1,4 +1,4 @@
-import model from '$lib/server/db/model/quarantine.js';
+import model from '$lib/server/db/model/quarantine';
 
 export async function load({ parent }) {
     const pageTitle = 'Email Quarantine';
