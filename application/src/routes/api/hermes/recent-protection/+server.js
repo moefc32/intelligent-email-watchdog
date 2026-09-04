@@ -21,10 +21,10 @@ export async function GET({ request }) {
 
         const endTime = new Date();
         const timeWindow = new Date(endTime.getTime() - 24 * 60 * 60 * 1000);
-        const result = await model.getByTime(timeWindow);
+        const result = await model.getByTime(timeWindow, 20);
 
         return json({
-            items: result.items.map((item) => ({
+            items: result.map((item) => ({
                 ...item,
                 receivedAt: dateTimeFormatter.format(item.receivedAt),
             })),

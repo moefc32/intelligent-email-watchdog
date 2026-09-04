@@ -1,8 +1,11 @@
 <script>
     import { page } from '$app/stores';
+    import { onMount } from 'svelte';
+    import * as echarts from 'echarts';
 
     const contents = $page.data.contents;
 
+    let chartCanvas;
     let currentTime = $state(new Date());
     let greeting = $derived.by(() => {
         const hours = currentTime.getHours();
@@ -13,6 +16,51 @@
         if (hours < 17) return 'Good afternoon';
 
         return 'Good evening';
+    });
+
+    onMount(() => {
+        const chart = echarts.init(chartCanvas);
+        const statuses = [
+            ...new Set(
+                contents.chartData.flatMap(item =>
+                    Object.keys(item).filter(key => key !== 'date'),
+                ),
+            ),
+        ];
+
+        chart.setOption({
+            responsive: true,
+            tooltip: {
+                trigger: 'axis',
+            },
+            legend: {
+                data: statuses,
+            },
+            xAxis: {
+                type: 'category',
+                data: contents.chartData.map(item => item.date),
+            },
+            yAxis: {
+                type: 'value',
+            },
+            series: statuses.map(status => ({
+                name: status,
+                type: 'line',
+                data: contents.chartData.map(item => item[status] ?? 0),
+                smooth: true,
+            })),
+        });
+
+        function handleResize() {
+            chart.resize();
+        }
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            chart.dispose();
+        };
     });
 </script>
 
@@ -40,9 +88,11 @@
     >
         <div class="flex flex-1 flex-col gap-1 px-6 py-3 border-gray-200">
             <span class="text-sm">Quarantined Email</span>
-            <span class="text-3xl">{0}</span>
+            <span class="text-3xl">{contents.totalQuarantined}</span>
         </div>
     </div>
 </div>
 
-<div class="flex flex-1 items-start p-3 bg-slate-500/25 rounded-lg"></div>
+<div class="p-3 bg-slate-500/25 h-[calc(100dvh-340px)] rounded-lg">
+    <div bind:this={chartCanvas} class="w-full h-full"></div>
+</div>

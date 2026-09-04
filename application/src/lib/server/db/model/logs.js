@@ -110,9 +110,9 @@ export default {
             throw new Error('Error when getting data!');
         }
     },
-    getByTime: async (timeWindow) => {
+    getByTime: async (timeWindow, limit) => {
         try {
-            const logs = await db
+            let query = db
                 .select({
                     id: Quarantine.publicId,
                     subject: Quarantine.subject,
@@ -125,12 +125,12 @@ export default {
                 .from(Logs)
                 .leftJoin(Quarantine, eq(Logs.quarantineId, Quarantine.id))
                 .where(gte(Logs.createdAt, timeWindow))
-                .orderBy(desc(Logs.createdAt))
-                .limit(20);
+                .orderBy(desc(Logs.createdAt));
 
-            return {
-                items: logs,
-            };
+            if (limit) query = query.limit(limit);
+            const result = await query;
+
+            return result;
         } catch (e) {
             console.error(e);
             throw new Error('Error when getting data!');

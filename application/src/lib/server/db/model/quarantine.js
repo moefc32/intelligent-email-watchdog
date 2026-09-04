@@ -1,4 +1,4 @@
-import { and, eq, like, desc, or, gte, isNull } from 'drizzle-orm';
+import { and, eq, like, desc, or, gte, isNull, sql } from 'drizzle-orm';
 import { Quarantine, Logs } from '../schema';
 import db from '../drizzle';
 
@@ -84,6 +84,21 @@ export default {
                 );
 
             return result[0] ?? null;
+        } catch (e) {
+            console.error(e);
+            throw new Error('Error when getting data!');
+        }
+    },
+    getTotalItem: async () => {
+        try {
+            const [{ count }] = await db
+                .select({
+                    count: sql`count(*)`,
+                })
+                .from(Quarantine)
+                .where(isNull(Quarantine.deletedAt));
+
+            return Number(count);
         } catch (e) {
             console.error(e);
             throw new Error('Error when getting data!');
