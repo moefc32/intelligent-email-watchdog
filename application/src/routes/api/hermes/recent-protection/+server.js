@@ -4,24 +4,30 @@ import model from '$lib/server/db/model/logs';
 import { BearerError, bearerVerify } from '$lib/server/bearerVerify';
 
 // get protection summary of the last 24 hours by maximum 20 items, triggered by user
-// Logs -> getByTime()
+
+const dateTimeFormatter =
+    new Intl.DateTimeFormat('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+    });
 
 export async function GET({ request }) {
     try {
         bearerVerify(request.headers.get('authorization'));
 
+        const endTime = new Date();
+        const timeWindow = new Date(endTime.getTime() - 24 * 60 * 60 * 1000);
+        const result = await model.getByTime(timeWindow);
+
         return json({
-            items: [
-                {
-                    id: '...',
-                    subject: '...',
-                    sender: '...',
-                    status: 'passed',
-                    reason: 'legitimate',
-                    score: 89,
-                    receivedAt: 'August 22, 2026 08:42'
-                }
-            ]
+            items: result.items.map((item) => ({
+                ...item,
+                receivedAt: dateTimeFormatter.format(item.receivedAt),
+            })),
         });
     } catch (e) {
         console.error(e);

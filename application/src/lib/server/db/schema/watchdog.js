@@ -7,6 +7,7 @@ import {
     text,
     timestamp,
     varchar,
+    index,
 } from 'drizzle-orm/mysql-core';
 import { relations } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
@@ -19,7 +20,10 @@ export const Quarantine = mysqlTable('Quarantine', {
     subject: text('subject'),
     headers: longtext('headers'),
     content: longtext('content'),
-});
+    deletedAt: timestamp('deleted_at', { fsp: 3 }),
+}, (table) => ({
+    deletedAtIdx: index('deleted_at_idx').on(table.deletedAt),
+}));
 
 export const Logs = mysqlTable('Logs', {
     id: bigint('id', { mode: 'number', unsigned: true })

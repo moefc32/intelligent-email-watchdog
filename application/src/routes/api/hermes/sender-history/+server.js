@@ -2,27 +2,29 @@ import { VITE_APP_NAME } from '$env/static/private';
 import { json } from '@sveltejs/kit';
 import model from '$lib/server/db/model/logs';
 import { BearerError, bearerVerify } from '$lib/server/bearerVerify';
+import isValidEmail from '$lib/isValidEmail';
 
 // get a specific sender history
-// Logs -> getBySender()
 
-export async function GET({ request }) {
+export async function GET({ request, url }) {
+    const sender = url.searchParams.get('sender');
+
+    if (!isValidEmail(sender)) {
+        return json({
+            application: VITE_APP_NAME,
+            message: 'Valid sender address must be provided',
+        }, {
+            status: 400,
+        });
+    }
+
     try {
         bearerVerify(request.headers.get('authorization'));
 
+        const result = await model.getBySender(sender);
+
         return json({
-            sender: '...',
-            status: {
-                passed: 15,
-                quarantined: 7
-            },
-            reason: {
-                legitimate: 15,
-                spam: 4,
-                scam: 2,
-                blacklist: 1
-            },
-            averageScore: 54.4
+            ...result,
         });
     } catch (e) {
         console.error(e);

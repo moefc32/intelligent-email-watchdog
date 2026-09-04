@@ -1,4 +1,4 @@
-import { eq, like, desc, or } from 'drizzle-orm';
+import { and, eq, like, desc, or, gte, isNull } from 'drizzle-orm';
 import { Quarantine, Logs } from '../schema';
 import db from '../drizzle';
 
@@ -15,11 +15,14 @@ export default {
                     createdAt: Logs.createdAt,
                 })
                 .from(Quarantine)
-                .leftJoin(Logs, eq(Quarantine.id, Logs.quarantineId))
+                .innerJoin(Logs, eq(Quarantine.id, Logs.quarantineId))
                 .where(
-                    or(
-                        like(Quarantine.subject, search),
-                        like(Logs.sender, search),
+                    and(
+                        isNull(Quarantine.deletedAt),
+                        or(
+                            like(Quarantine.subject, search),
+                            like(Logs.sender, search),
+                        )
                     )
                 )
                 .orderBy(desc(Logs.createdAt))
@@ -44,7 +47,8 @@ export default {
                     createdAt: Logs.createdAt,
                 })
                 .from(Quarantine)
-                .leftJoin(Logs, eq(Quarantine.id, Logs.quarantineId))
+                .innerJoin(Logs, eq(Quarantine.id, Logs.quarantineId))
+                .where(isNull(Quarantine.deletedAt))
                 .orderBy(desc(Logs.createdAt))
                 .limit(limit)
                 .offset(offset);
@@ -71,10 +75,45 @@ export default {
                     createdAt: Logs.createdAt,
                 })
                 .from(Quarantine)
-                .leftJoin(Logs, eq(Quarantine.id, Logs.quarantineId))
-                .where(eq(Quarantine.publicId, id));
+                .innerJoin(Logs, eq(Quarantine.id, Logs.quarantineId))
+                .where(
+                    and(
+                        eq(Quarantine.publicId, id),
+                        isNull(Quarantine.deletedAt)
+                    )
+                );
 
             return result[0] ?? null;
+        } catch (e) {
+            console.error(e);
+            throw new Error('Error when getting data!');
+        }
+    },
+    getByTime: async (timeWindow) => {
+        try {
+            const result = await db
+                .select({
+                    id: Quarantine.publicId,
+                    subject: Quarantine.subject,
+                    sender: Logs.sender,
+                    reason: Logs.reason,
+                    score: Logs.score,
+                    receivedAt: Logs.createdAt,
+                })
+                .from(Quarantine)
+                .innerJoin(
+                    Logs,
+                    eq(Logs.quarantineId, Quarantine.id)
+                )
+                .where(
+                    and(
+                        isNull(Quarantine.deletedAt),
+                        gte(Logs.createdAt, timeWindow)
+                    )
+                )
+                .orderBy(desc(Logs.createdAt));
+
+            return result;
         } catch (e) {
             console.error(e);
             throw new Error('Error when getting data!');
@@ -117,7 +156,11 @@ export default {
     },
     deleteData: async (id) => {
         try {
-            const result = await db.delete(Quarantine)
+            const result = await db
+                .update(Quarantine)
+                .set({
+                    deletedAt: new Date(),
+                })
                 .where(eq(Quarantine.publicId, id));
 
             return result;
