@@ -7,8 +7,6 @@ const statuses = [
 ];
 
 async function notifyApp(endpoint, secret, message, statusCode) {
-    const content = await new Response(message.raw).text();
-
     return fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -20,9 +18,12 @@ async function notifyApp(endpoint, secret, message, statusCode) {
             sender: message.from,
             recipient: message.to,
             status: statuses[statusCode],
-            subject: message.headers.get('subject'),
-            headers: Object.fromEntries(message.headers),
-            content,
+
+            ...(statusCode !== 1 && {
+                subject: message.headers.get('subject'),
+                headers: Object.fromEntries(message.headers),
+                content: await new Response(message.raw).text(),
+            }),
         })
     });
 }
