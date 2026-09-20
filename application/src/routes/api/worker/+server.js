@@ -55,6 +55,21 @@ export async function POST({ request }) {
             model: 'hermes-agent',
             messages: [
                 {
+                    role: 'system',
+                    content: `
+Analyze the incoming email for VARIA email protection.
+Decide whether the email should be "passed" or "quarantined" based on the available information.
+Return ONLY valid JSON in this format:
+
+{
+    "status": "passed" | "quarantined",
+    "message": "brief reasoning",
+    "reason": "scam" | "spam" | null,
+    "score": "your score, given 100 is the most legitimate while lower score is less"
+}
+        `,
+                },
+                {
                     role: 'user',
                     content: JSON.stringify({
                         sender,
@@ -72,14 +87,20 @@ export async function POST({ request }) {
             stream: false,
         });
 
-        console.log(interpretEmail);
+        let fromHermes;
 
-        // expected response
-        const fromHermes = {
-            status: 'quarantined',
-            message: 'The email appears to be a recruitment scam.',
-            reason: 'scam'
-        };
+        try {
+            fromHermes = JSON.parse(
+                interpretEmail?.choices[0]?.message?.content
+            );
+        } catch {
+            fromHermes = {
+                status: 'quarantined',
+                message: 'Unable to interpret the email safely.',
+                reason: 'unknown',
+                score: 0,
+            };
+        }
 
         if (fromHermes?.status === 'passed') {
             await modelLogs.createData({
@@ -88,6 +109,7 @@ export async function POST({ request }) {
                 status: fromHermes.status,
                 message: fromHermes.message,
                 reason: fromHermes.reason,
+                score: fromHermes.score,
             });
 
             return text(true);
@@ -98,8 +120,9 @@ export async function POST({ request }) {
                 status: fromHermes.status,
                 message: fromHermes.message,
                 reason: fromHermes.reason,
+                score: fromHermes.score,
                 subject,
-                headers,
+                headers: JSON.stringify(headers),
                 content,
             });
 

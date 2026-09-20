@@ -21,5 +21,8 @@ export default defineConfig({
     server: {
         host: process.env.VITE_IPBIND || 'localhost',
         port: parseInt(process.env.VITE_PORT, 10),
+        allowedHosts: [
+            'vps.mf-chan.com',
+        ],
     },
 });

@@ -7,17 +7,17 @@ description: Retrieve and explain email-protection information from the user's a
 
 Use this skill for questions concerning professional email protection, quarantine, recent protection activity, sender history, protection summaries, or application health.
 
-## App Access
+## Application Access
 
-The App API base URL is available as :
+The application API base URL is available as :
 
 `APP_BASE_URL`
 
-Use the App API through HTTP GET requests.
+Use the application API through HTTP GET requests.
 
 Do not access the Email Worker.
 
-Do not invent App endpoints.
+Do not invent application endpoints.
 
 ## Available Endpoints
 
@@ -43,7 +43,7 @@ Site health :
 
 ## Request Procedure
 
-When an App API request is required :
+When an application API request is required :
 
 1. Construct the appropriate GET request using `APP_BASE_URL`.
 2. Execute the request with the available HTTP-capable tool.
@@ -51,6 +51,28 @@ When an App API request is required :
 4. Base the response entirely on the returned data and the project rules in `HERMES.md`.
 
 Do not fabricate API responses.
+
+## Response Requirements
+
+Application API responses are internal tool data.
+
+After executing an application API request, Hermes must interpret the returned data and generate a separate user-facing response.
+
+Never use the raw API response as the final response.
+
+Never output JSON, serialized API responses, tool results, exit codes, or other machine-readable execution data unless the user explicitly requests the raw API response.
+
+A successful tool call does not constitute a user-facing response.
+
+For example, if `/api/hermes/site-health` returns:
+
+{"status":"ok"}
+
+the user-facing response should be:
+
+The application is healthy.
+
+For other endpoints, explain the relevant returned information naturally. When `status`, `reason`, or `score` are present, preserve their exact returned values according to the Protection Interpretation rules.
 
 ## Capability Selection
 
@@ -68,11 +90,11 @@ When recent-protection or quarantine identifies a sender relevant to a question 
 
 ## Protection Interpretation
 
-The App is authoritative.
+The application is authoritative.
 
 Preserve returned `status`, `reason`, and `score` values.
 
-Do not independently classify existing App results.
+Do not independently classify existing application results.
 
 Do not invent the meaning of an unknown reason or status.
 

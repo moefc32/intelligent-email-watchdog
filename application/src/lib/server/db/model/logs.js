@@ -186,7 +186,7 @@ export default {
     },
     createData: async (data) => {
         try {
-            const result = await tx
+            const result = await db
                 .insert(Logs)
                 .values({
                     sender: data.sender,
