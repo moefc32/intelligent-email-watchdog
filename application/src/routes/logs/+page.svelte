@@ -1,6 +1,7 @@
 <script>
     import { page } from '$app/stores';
     import { ExternalLink } from '@lucide/svelte';
+    import { toast } from 'svelte-sonner';
     import ky from 'ky';
     import datePrettier from '$lib/datePrettier';
 
@@ -9,8 +10,6 @@
     let contents = $page.data.contents;
 
     async function viewLog(year, month, day) {
-        contents.filter = { year, month, day };
-
         try {
             const { data } = await ky
                 .get('/api/logs', {
@@ -20,11 +19,12 @@
 
             contents = {
                 ...contents,
+                filter: { year, month, day },
                 logs: data.logs,
             };
         } catch (e) {
             console.error(e);
-            toast.error('Error when deleting the email!');
+            toast.error('Error when getting the logs!');
         }
     }
 </script>

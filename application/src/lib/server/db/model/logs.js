@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, lt, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, lt, sql } from 'drizzle-orm';
 import { Logs, Quarantine } from '../schema';
 import db from '../drizzle';
 
@@ -9,7 +9,6 @@ export default {
             const nextMonthStart = new Date(year, month, 1);
 
             const targetDay = day ?? new Date().getDate();
-
             const dayStart = new Date(year, month - 1, targetDay);
             const nextDayStart = new Date(year, month - 1, targetDay + 1);
 
@@ -125,7 +124,7 @@ export default {
                 .from(Logs)
                 .leftJoin(Quarantine, eq(Logs.quarantineId, Quarantine.id))
                 .where(gte(Logs.createdAt, timeWindow))
-                .orderBy(desc(Logs.createdAt));
+                .orderBy(asc(Logs.createdAt));
 
             if (limit) query = query.limit(limit);
             const result = await query;

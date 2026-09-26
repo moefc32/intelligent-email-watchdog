@@ -19,7 +19,7 @@
     });
 
     onMount(() => {
-        const chart = echarts.init(chartCanvas);
+        const chart = echarts.init(chartCanvas, 'dark');
         const statuses = [
             ...new Set(
                 contents.chartData.flatMap(item =>
@@ -35,6 +35,13 @@
             },
             legend: {
                 data: statuses,
+            },
+            grid: {
+                left: 30,
+                right: 30,
+                top: 48,
+                bottom: 64,
+                containLabel: true,
             },
             xAxis: {
                 type: 'category',
@@ -93,6 +100,6 @@
     </div>
 </div>
 
-<div class="p-3 bg-slate-500/25 h-[calc(100dvh-340px)] rounded-lg">
+<div class="bg-slate-500/25 h-[calc(100dvh-340px)] rounded-lg overflow-hidden">
     <div bind:this={chartCanvas} class="w-full h-full"></div>
 </div>

@@ -20,7 +20,7 @@ export const Quarantine = mysqlTable('Quarantine', {
     subject: text('subject'),
     headers: longtext('headers'),
     content: longtext('content'),
-    deletedAt: timestamp('deleted_at', { fsp: 3 }),
+    deletedAt: timestamp('deleted_at', { fsp: 3, mode: 'string' }),
 }, (table) => ({
     deletedAtIdx: index('deleted_at_idx').on(table.deletedAt),
 }));
@@ -40,7 +40,8 @@ export const Logs = mysqlTable('Logs', {
     status: varchar('status', { length: 32 }).notNull(),
     reason: varchar('reason', { length: 64 }),
     score: int('score'),
-    createdAt: timestamp('created_at', { fsp: 3 }).notNull().defaultNow(),
+    createdAt: timestamp('created_at', { fsp: 3, mode: 'string' })
+        .notNull().defaultNow(),
 });
 
 export const QuarantineRelations = relations(Quarantine, ({ one }) => ({
