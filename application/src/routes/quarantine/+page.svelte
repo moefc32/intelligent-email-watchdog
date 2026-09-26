@@ -62,9 +62,12 @@
                             })}
                         </td>
                         <td class="w-[1%] whitespace-nowrap">
-                            <button class="btn btn-sm btn-primary">
+                            <a
+                                href={`/quarantine/${item.id}`}
+                                class="btn btn-sm btn-primary"
+                            >
                                 <Eye size={12} /> View
-                            </button>
+                            </a>
                             <button
                                 class="btn btn-sm btn-error"
                                 on:click={() => {

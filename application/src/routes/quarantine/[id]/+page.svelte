@@ -41,18 +41,18 @@
     <div
         class="flex flex-col items-start p-3 bg-slate-500/25 w-full rounded-lg"
     >
-        <div class="flex w-full">
-            <span class="w-26">Subject</span>: {contents.subject}
+        <div class="flex flex-col w-full mb-3 pb-3 border-b-1 border-gray-500">
+            <div class="text-lg font-semibold">{contents.subject}</div>
         </div>
         <div class="flex gap-3 w-full">
             <div class="flex flex-1 flex-col">
-                <div class="flex">
+                <div class="flex gap-1">
                     <span class="w-26">Sender</span>: {contents.sender}
                 </div>
-                <div class="flex">
+                <div class="flex gap-1">
                     <span class="w-26">Recipient</span>: {contents.recipient}
                 </div>
-                <div class="flex">
+                <div class="flex gap-1">
                     <span class="w-26">Received at</span>: {datePrettier(
                         contents.createdAt,
                         {
@@ -63,16 +63,20 @@
                 </div>
             </div>
             <div class="flex flex-1 flex-col">
-                <div class="flex">
+                <div class="flex gap-1">
                     <span class="w-26">Status</span>: {contents.status}
                 </div>
-                <div class="flex">
+                <div class="flex gap-1">
                     <span class="w-26">Reason</span>: {contents.reason}
                 </div>
-                <div class="flex">
-                    <span class="w-26">Score</span>: {contents.score}
+                <div class="flex gap-1">
+                    <span class="w-26">Score</span>: {contents.score}/100
                 </div>
             </div>
+        </div>
+        <div class="flex gap-1 w-full mt-3 pt-3 border-t-1 border-gray-500">
+            <span class="w-26">Detail</span>:
+            <span class="flex-1">{contents.message}</span>
         </div>
     </div>
 

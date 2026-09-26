@@ -18,11 +18,10 @@ export async function load({ parent }) {
         contents: {
             filter: {
                 year: today.getFullYear(),
-                month: today.toLocaleString('en-US', {
-                    month: 'long',
-                }),
-                date: today.getDate(),
+                month: today.getMonth() + 1,
+                day: today.getDate(),
             },
+            today,
             ...contents,
         },
     };

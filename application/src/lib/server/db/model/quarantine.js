@@ -69,6 +69,7 @@ export default {
                     content: Quarantine.content,
                     sender: Logs.sender,
                     recipient: Logs.recipient,
+                    message: Logs.message,
                     status: Logs.status,
                     reason: Logs.reason,
                     score: Logs.score,
