@@ -7,10 +7,31 @@
     import PageTitle from '$lib/component/PageTitle.svelte';
 
     let contents = $page.data.contents;
+    let totalPages = $page.data.totalPages;
 
+    let currentPage = 1;
     let editContext = {
         id: '',
     };
+
+    async function navigate(page) {
+        if (page === currentPage) return;
+
+        try {
+            const { data } = await ky
+                .get('/api/quarantine', {
+                    searchParams: { page },
+                })
+                .json();
+
+            contents = data.contents;
+            totalPages = data.totalPages;
+            currentPage = page;
+        } catch (e) {
+            console.error(e);
+            toast.error('Error when navigating the page!');
+        }
+    }
 
     async function submitDelete() {
         try {
@@ -34,7 +55,7 @@
 <PageTitle pageTitle={$page.data.pageTitle} />
 
 <div
-    class="flex flex-1 items-start p-3 bg-slate-500/25 max-h-[calc(100dvh-205px)] rounded-lg overflow-y-auto"
+    class="flex flex-1 flex-col items-start gap-3 p-3 bg-slate-500/25 max-h-[calc(100dvh-205px)] rounded-lg overflow-y-auto"
 >
     <table class="table table-pin-rows">
         <thead>
@@ -89,6 +110,17 @@
             {/if}
         </tbody>
     </table>
+    <div class="join">
+        {#each Array(totalPages) as _, i}
+            <button
+                class="join-item btn btn-sm {currentPage === i + 1 &&
+                    'btn-primary'}"
+                on:click={() => navigate(i + 1)}
+            >
+                {i + 1}
+            </button>
+        {/each}
+    </div>
 </div>
 
 <dialog id="quarantine_delete" class="modal">

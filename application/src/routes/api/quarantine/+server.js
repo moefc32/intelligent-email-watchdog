@@ -1,21 +1,17 @@
-import { VITE_APP_NAME } from '$env/static/private';
+import {
+    VITE_APP_NAME,
+    VITE_PAGINATION_ITEMS,
+} from '$env/static/private';
 import { json } from '@sveltejs/kit';
 import model from '$lib/server/db/model/quarantine';
 
 export async function GET({ url }) {
-    const id = url.searchParams.get('id');
-
-    if (!id) {
-        return json({
-            application: VITE_APP_NAME,
-            message: 'Error, id must be provided!',
-        }, {
-            status: 400,
-        });
-    }
+    const page = Number(url.searchParams.get('page')) || 1;
+    const limit = Number(VITE_PAGINATION_ITEMS) || 10;
 
     try {
-        const result = await model.getData(id);
+        const offset = (page - 1) * limit;
+        const result = await model.getAllData(offset, limit);
 
         return json({
             application: VITE_APP_NAME,

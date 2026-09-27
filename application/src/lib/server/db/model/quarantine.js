@@ -1,4 +1,4 @@
-import { and, eq, like, desc, or, gte, isNull, sql } from 'drizzle-orm';
+import { and, count, eq, like, desc, or, gte, isNull, sql } from 'drizzle-orm';
 import { Quarantine, Logs } from '../schema';
 import db from '../drizzle';
 
@@ -35,25 +35,38 @@ export default {
             throw new Error('Error when getting data!');
         }
     },
-    getAllData: async (limit = 10, offset = 0) => {
+    getAllData: async (offset = 0, limit = 10) => {
         try {
-            const result = await db
-                .select({
-                    id: Quarantine.publicId,
-                    subject: Quarantine.subject,
-                    sender: Logs.sender,
-                    reason: Logs.reason,
-                    score: Logs.score,
-                    createdAt: Logs.createdAt,
-                })
-                .from(Quarantine)
-                .innerJoin(Logs, eq(Quarantine.id, Logs.quarantineId))
-                .where(isNull(Quarantine.deletedAt))
-                .orderBy(desc(Logs.createdAt))
-                .limit(limit)
-                .offset(offset);
+            const [result, totalResult] = await Promise.all([
+                db
+                    .select({
+                        id: Quarantine.publicId,
+                        subject: Quarantine.subject,
+                        sender: Logs.sender,
+                        reason: Logs.reason,
+                        score: Logs.score,
+                        createdAt: Logs.createdAt,
+                    })
+                    .from(Quarantine)
+                    .innerJoin(Logs, eq(Quarantine.id, Logs.quarantineId))
+                    .where(isNull(Quarantine.deletedAt))
+                    .orderBy(desc(Logs.createdAt))
+                    .limit(limit)
+                    .offset(offset),
+                db
+                    .select({ count: count() })
+                    .from(Quarantine)
+                    .innerJoin(Logs, eq(Quarantine.id, Logs.quarantineId))
+                    .where(isNull(Quarantine.deletedAt)),
+            ]);
 
-            return result;
+            const totalItems = totalResult[0]?.count ?? 0;
+            const totalPages = Math.ceil(totalItems / limit);
+
+            return {
+                contents: result,
+                totalPages,
+            };
         } catch (e) {
             console.error(e);
             throw new Error('Error when getting data!');
